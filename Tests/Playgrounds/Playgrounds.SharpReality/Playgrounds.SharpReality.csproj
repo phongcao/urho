@@ -40,11 +40,18 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
-  <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+  <ItemGroup Condition="'$(Platform)' == 'x86'">
+    <Content Include="..\..\..\Bin\SharpReality\Win32\UrhoSharp.SharpReality\mono-holourho.dll">
+      <Link>mono-holourho.dll</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Platform)' == 'x64'">
     <Content Include="..\..\..\Bin\SharpReality\x64\UrhoSharp.SharpReality\mono-holourho.dll">
       <Link>mono-holourho.dll</Link>
     </Content>
+  </ItemGroup>    
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="..\..\..\Urho3D\CoreData.pak">
       <Link>CoreData.pak</Link>
     </Content>
