@@ -21,10 +21,17 @@ float2 GetTexCoord(float2 iTexCoord)
     return float2(dot(iTexCoord, cUOffset.xy) + cUOffset.w, dot(iTexCoord, cVOffset.xy) + cVOffset.w);
 };
 
+#ifdef STEREO_INSTANCING
+float4 GetClipPos(int eyeIdx, float3 worldPos)
+{
+    return mul(float4(worldPos, 1.0), (eyeIdx == 0) ? cStereoViewProjLeft : cStereoViewProjRight);
+}
+#else
 float4 GetClipPos(float3 worldPos)
 {
     return mul(float4(worldPos, 1.0), cViewProj);
 }
+#endif
 
 float GetZonePos(float3 worldPos)
 {

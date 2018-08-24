@@ -31,6 +31,9 @@ void VS(float4 iPos : POSITION,
     #if defined(BILLBOARD) || defined(DIRBILLBOARD)
         float2 iSize : TEXCOORD1,
     #endif
+	#ifdef STEREO_INSTANCING
+		uint instId : SV_InstanceID,
+	#endif
     #ifndef NORMALMAP
         out float2 oTexCoord : TEXCOORD0,
     #else
@@ -65,7 +68,12 @@ void VS(float4 iPos : POSITION,
     #if defined(D3D11) && defined(CLIPPLANE)
         out float oClip : SV_CLIPDISTANCE0,
     #endif
-    out float4 oPos : OUTPOSITION)
+	#ifndef STEREO_INSTANCING
+		out float4 oPos : OUTPOSITION)
+	#else
+		out float4 oPos : OUTPOSITION,
+		out uint rtvId : SV_RenderTargetArrayIndex)
+	#endif
 {
     // Define a 0,0 UV coord if not expected from the vertex data
     #ifdef NOUV
@@ -74,7 +82,12 @@ void VS(float4 iPos : POSITION,
 
     float4x3 modelMatrix = iModelMatrix;
     float3 worldPos = GetWorldPos(modelMatrix);
-    oPos = GetClipPos(worldPos);
+#ifndef STEREO_INSTANCING
+	oPos = GetClipPos(worldPos);
+#else
+	int idx = instId % 2;
+	oPos = GetClipPos(idx, worldPos);
+#endif
     oNormal = GetWorldNormal(modelMatrix);
     oWorldPos = float4(worldPos, GetDepth(oPos));
 
@@ -134,6 +147,10 @@ void VS(float4 iPos : POSITION,
             oReflectionVec = worldPos - cCameraPos;
         #endif
     #endif
+	
+	#ifdef STEREO_INSTANCING
+		rtvId = idx;
+	#endif
 }
 
 void PS(
