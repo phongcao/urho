@@ -30,14 +30,18 @@ namespace Urho.SharpReality
 		{
 			get
 			{
-				if (distanceBetweenEyes == 0 && !Emulator)
+#if STEREO_INSTANCING
+                return LeftCamera.DistanceBetweenEyes;
+#else
+                if (distanceBetweenEyes == 0 && !Emulator)
 				{
 					var l = LeftCamera.Node.WorldPosition;
 					var r = RightCamera.Node.WorldPosition;
 					distanceBetweenEyes = (float)Math.Sqrt((r.X-l.X)*(r.X-l.X)+(r.Y-l.Y)*(r.Y-l.Y)+(r.Z-l.Z)*(r.Z-l.Z));
 				}
 				return distanceBetweenEyes;
-			}
+#endif
+            }
 		}
 
 		public Vector3 HeadPosition
@@ -93,7 +97,15 @@ namespace Urho.SharpReality
 			ref Matrix4 leftView, ref Matrix4 leftProjection,
 			ref Matrix4 rightView, ref Matrix4 rightProjection);
 
-		protected override void Start()
+#if STEREO_INSTANCING
+        [DllImport(Consts.NativeImport, CallingConvention = CallingConvention.Cdecl)]
+        static extern void Camera_SetHoloProjectionsStereoInstancing(
+            IntPtr camera, IntPtr cullingCamera,
+            ref Matrix4 leftView, ref Matrix4 leftProjection,
+            ref Matrix4 rightView, ref Matrix4 rightProjection);
+#endif
+
+        protected override void Start()
 		{
 			Renderer.SetDefaultRenderPath(DefaultRenderPath);
 			Renderer.DrawShadows = false;
@@ -113,7 +125,26 @@ namespace Urho.SharpReality
 			Renderer.TextureAnisotropy = 0;
 			Renderer.TextureFilterMode = TextureFilterMode.Bilinear;
 
-			var leftCameraNode = Scene.CreateChild();
+#if UWP_HOLO && STEREO_INSTANCING
+            var cameraNode = Scene.CreateChild();
+			LeftCamera = cameraNode.CreateComponent<Camera>();
+            RightCamera = LeftCamera; // Only use one camera
+            Renderer.NumViewports = 1;
+
+			var viewport = new Viewport(Scene, LeftCamera, null);
+			Renderer.SetViewport(0, viewport);
+
+			var cullingCameraNode = Scene.CreateChild();
+			CullingCamera = cullingCameraNode.CreateComponent<Camera>();
+			viewport.CullCamera = CullingCamera;
+
+			Time.SubscribeToFrameStarted(args =>
+				Camera_SetHoloProjectionsStereoInstancing(
+					LeftCamera.Handle, CullingCamera.Handle,
+					ref leftView, ref leftProj,
+					ref rightView, ref rightProj));
+#else // UWP_HOLO && STEREO_INSTANCING
+            var leftCameraNode = Scene.CreateChild();
 			var rightCameraNode = Scene.CreateChild();
 			LeftCamera = leftCameraNode.CreateComponent<Camera>();
 			RightCamera = rightCameraNode.CreateComponent<Camera>();
@@ -158,9 +189,10 @@ namespace Urho.SharpReality
 			leftCameraNode.Translate(new Vector3(-0.032f, 0, 0));
 			rightCameraNode.Translate(new Vector3(0.032f, 0, 0));
 #endif
-		}
+#endif // UWP_HOLO && STEREO_INSTANCING
+        }
 
-		internal void UpdateStereoView(Matrix4 leftView, Matrix4 rightView, Matrix4 leftProj, Matrix4 rightProj)
+        internal void UpdateStereoView(Matrix4 leftView, Matrix4 rightView, Matrix4 leftProj, Matrix4 rightProj)
 		{
 			this.leftView = leftView;
 			this.rightView = rightView;

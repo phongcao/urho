@@ -10986,6 +10986,13 @@ Camera_GetProjection (Urho3D::Camera *_target)
 }
 
 
+DllExport float
+Camera_GetDistanceBetweenEyes (Urho3D::Camera *_target)
+{
+	return _target->GetDistanceBetweenEyes ();
+}
+
+
 DllExport Interop::Matrix4 
 Camera_GetGPUProjection (Urho3D::Camera *_target)
 {

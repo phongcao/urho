@@ -86,7 +86,7 @@ void VS(float4 iPos : POSITION,
 	oPos = GetClipPos(worldPos);
 #else
 	int idx = instId % 2;
-	oPos = GetClipPos(idx, worldPos);
+	oPos = GetStereoClipPos(idx, worldPos);
 #endif
     oNormal = GetWorldNormal(modelMatrix);
     oWorldPos = float4(worldPos, GetDepth(oPos));

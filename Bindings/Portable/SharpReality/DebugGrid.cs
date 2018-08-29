@@ -14,7 +14,10 @@ namespace Urho.SharpReality
 			geom.BeginGeometry(0, PrimitiveType.LineList);
 			var material = new Material();
 			material.SetTechnique(0, CoreAssets.Techniques.NoTextureUnlitVCol, 1, 1);
-			geom.SetMaterial(material);
+#if STEREO_INSTANCING
+            material.VertexShaderDefines += "STEREO_INSTANCING ";
+#endif
+            geom.SetMaterial(material);
 
 			var halfSize = horizontalSize / 2;
 			for (int i = -halfSize; i <= halfSize; i++)

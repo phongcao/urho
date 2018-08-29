@@ -26,6 +26,9 @@ void VS(float4 iPos : POSITION,
     #if defined(TRAILFACECAM) || defined(TRAILBONE)
         float4 iTangent : TANGENT,
     #endif
+	#ifdef STEREO_INSTANCING
+		uint instId : SV_InstanceID,
+	#endif	
     out float2 oTexCoord : TEXCOORD0,
     out float4 oWorldPos : TEXCOORD2,
     #ifdef VERTEXCOLOR
@@ -34,7 +37,12 @@ void VS(float4 iPos : POSITION,
     #if defined(D3D11) && defined(CLIPPLANE)
         out float oClip : SV_CLIPDISTANCE0,
     #endif
-    out float4 oPos : OUTPOSITION)
+	#ifndef STEREO_INSTANCING
+		out float4 oPos : OUTPOSITION)
+	#else
+		out float4 oPos : OUTPOSITION,
+		out uint rtvId : SV_RenderTargetArrayIndex)
+	#endif
 {
     // Define a 0,0 UV coord if not expected from the vertex data
     #ifdef NOUV
@@ -43,7 +51,12 @@ void VS(float4 iPos : POSITION,
 
     float4x3 modelMatrix = iModelMatrix;
     float3 worldPos = GetWorldPos(modelMatrix);
-    oPos = GetClipPos(worldPos);
+#ifndef STEREO_INSTANCING
+	oPos = GetClipPos(worldPos);
+#else
+	int idx = instId % 2;
+	oPos = GetStereoClipPos(idx, worldPos);
+#endif
     oTexCoord = GetTexCoord(iTexCoord);
     oWorldPos = float4(worldPos, GetDepth(oPos));
 
@@ -54,6 +67,10 @@ void VS(float4 iPos : POSITION,
     #ifdef VERTEXCOLOR
         oColor = iColor;
     #endif
+	
+	#ifdef STEREO_INSTANCING
+		rtvId = idx;
+	#endif	
 }
 
 void PS(float2 iTexCoord : TEXCOORD0,

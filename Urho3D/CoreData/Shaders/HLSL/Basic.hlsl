@@ -25,6 +25,9 @@ void VS(float4 iPos : POSITION,
     #if defined(TRAILFACECAM) || defined(TRAILBONE)
         float4 iTangent : TANGENT,
     #endif
+	#ifdef STEREO_INSTANCING
+		uint instId : SV_InstanceID,
+	#endif		
     #ifdef DIFFMAP
         out float2 oTexCoord : TEXCOORD0,
     #endif
@@ -34,11 +37,21 @@ void VS(float4 iPos : POSITION,
     #if defined(D3D11) && defined(CLIPPLANE)
         out float oClip : SV_CLIPDISTANCE0,
     #endif
-    out float4 oPos : OUTPOSITION)
+	#ifndef STEREO_INSTANCING
+		out float4 oPos : OUTPOSITION)
+	#else
+		out float4 oPos : OUTPOSITION,
+		out uint rtvId : SV_RenderTargetArrayIndex)
+	#endif
 {
     float4x3 modelMatrix = iModelMatrix;
     float3 worldPos = GetWorldPos(modelMatrix);
-    oPos = GetClipPos(worldPos);
+#ifndef STEREO_INSTANCING
+	oPos = GetClipPos(worldPos);
+#else
+	int idx = instId % 2;
+	oPos = GetStereoClipPos(idx, worldPos);
+#endif
 
     #if defined(D3D11) && defined(CLIPPLANE)
         oClip = dot(oPos, cClipPlane);
@@ -50,6 +63,10 @@ void VS(float4 iPos : POSITION,
     #ifdef DIFFMAP
         oTexCoord = iTexCoord;
     #endif
+	
+	#ifdef STEREO_INSTANCING
+		rtvId = idx;
+	#endif		
 }
 
 void PS(

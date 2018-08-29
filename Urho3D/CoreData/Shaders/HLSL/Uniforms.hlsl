@@ -105,12 +105,11 @@ cbuffer CameraVS : register(b1)
     float4 cGBufferOffsets;
     float4x3 cView;
     float4x3 cViewInv;
-#ifndef STEREO_INSTANCING
     float4x4 cViewProj;
-#else
+#ifdef STEREO_INSTANCING
     uniform float4x4 cStereoViewProjLeft;
 	uniform float4x4 cStereoViewProjRight;
-#endif	
+#endif
     float4 cClipPlane;
 }
 

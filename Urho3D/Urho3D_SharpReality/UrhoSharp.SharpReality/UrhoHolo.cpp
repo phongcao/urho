@@ -179,6 +179,45 @@ extern "C"
 		}
 	}
 
+#ifdef STEREO_INSTANCING
+	__declspec(dllexport) void Camera_SetHoloProjectionsStereoInstancing(
+		Camera* camera, Camera* cullingCamera,
+		const class Matrix4& leftView, const class Matrix4& leftProjection,
+		const class Matrix4& rightView, const class Matrix4& rightProjection)
+	{
+		camera->SetStereoProjection(StereoEye::LEFT, leftProjection);
+		camera->SetStereoProjection(StereoEye::RIGHT, rightProjection);
+		camera->SetStereoView(StereoEye::LEFT, leftView);
+		camera->SetStereoView(StereoEye::RIGHT, rightView);
+
+		if (cullingCamera)
+		{
+			auto leftPos = camera->GetStereoWorldPosition(StereoEye::LEFT);
+			auto rightPos = camera->GetStereoWorldPosition(StereoEye::RIGHT);
+			auto leftToRightVec = rightPos - leftPos;
+			float separation = leftToRightVec.Length();
+
+			// Note: atanf and tanf cancel, as does reciprocal
+			// float fovHorizontal = 360 * atanf(1 / projection.m00_) / M_PI;
+			// float fovHorizontalHalfedRad = atanf(1 / leftProjection.m00_);
+			// float cullEyePullback = (0.5f * separation) / tanf(fovHorizontalHalfedRad);
+			float cullEyePullback = (0.5f * separation) * leftProjection.m00_;
+
+			// Move cull camera between eyes and pull back
+			auto worldDir = camera->GetNode()->GetWorldDirection();
+			auto cullCameraPosition = (leftPos + (0.5f * leftToRightVec)) - (worldDir.Normalized() * cullEyePullback);
+
+			// Copy projection and rotation from left camera and set the position
+			Camera_SetHoloProjection(cullingCamera, leftView, leftProjection);
+			cullingCamera->GetNode()->SetWorldPosition(cullCameraPosition);
+
+			// Move culling camera's near and far planes ahead to match that of the eye cameras
+			cullingCamera->SetNearClip(cullingCamera->GetNearClip() + cullEyePullback);
+			cullingCamera->SetFarClip(cullingCamera->GetFarClip() + cullEyePullback);
+		}
+	}
+#endif
+
 	ID3D11Texture2D* HoloLens_GetBackbuffer()
 	{
 		auto pose = current_frame->CurrentPrediction->CameraPoses->First()->Current;//TOOD: remove First()

@@ -31,7 +31,10 @@ namespace Urho.SharpReality
 			Material mat = new Material();
 			mat.SetTechnique(0, CoreAssets.Techniques.NoTextureOverlay, 1, 1);
 			mat.SetShaderParameter("MatDiffColor", Color.Cyan);
-			RunIdleAnimation();
+#if STEREO_INSTANCING
+            mat.VertexShaderDefines += "STEREO_INSTANCING ";
+#endif
+            RunIdleAnimation();
 			staticModel.SetMaterial(mat);
 			staticModel.ViewMask = 0x80000000; //hide from raycasts
 			base.OnAttachedToNode(node);

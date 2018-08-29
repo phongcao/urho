@@ -548,7 +548,19 @@ namespace Urho
 			return Camera_GetProjection (handle);
 		}
 
-		[DllImport (Consts.NativeImport, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(Consts.NativeImport, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern float Camera_GetDistanceBetweenEyes ();
+
+        /// <summary>
+        /// Return the distance between both eyes.
+        /// </summary>
+        private float GetDistanceBetweenEyes ()
+        {
+            Runtime.ValidateRefCounted (this);
+            return Camera_GetDistanceBetweenEyes ();
+        }
+
+        [DllImport (Consts.NativeImport, CallingConvention = CallingConvention.Cdecl)]
 		internal static extern Matrix4 Camera_GetGPUProjection (IntPtr handle);
 
 		/// <summary>
@@ -1185,10 +1197,19 @@ namespace Urho
 			}
 		}
 
-		/// <summary>
-		/// Return frustum in world space.
-		/// </summary>
-		public Frustum Frustum {
+        /// <summary>
+        /// Return the distance between both eyes.
+        /// </summary>
+        public float DistanceBetweenEyes {
+            get {
+                return GetDistanceBetweenEyes ();
+            }
+        }
+
+        /// <summary>
+        /// Return frustum in world space.
+        /// </summary>
+        public Frustum Frustum {
 			get {
 				return GetFrustum ();
 			}

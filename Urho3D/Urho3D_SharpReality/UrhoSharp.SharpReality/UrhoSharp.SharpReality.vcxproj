@@ -71,7 +71,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(IntermediateOutputPath);$(ProjectDir)..\include;$(ProjectDir)..\..\Source\Source\ThirdParty\SDL\include;$(ProjectDir)..\include\Urho3D\ThirdParty;$(ProjectDir)..\include\Urho3D\ThirdParty\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;STEREO_INSTANCING;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -86,7 +86,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(IntermediateOutputPath);$(ProjectDir)..\include;$(ProjectDir)..\..\Source\Source\ThirdParty\SDL\include;$(ProjectDir)..\include\Urho3D\ThirdParty;$(ProjectDir)..\include\Urho3D\ThirdParty\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalOptions>/machine:x64 /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;STEREO_INSTANCING;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -102,7 +102,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(IntermediateOutputPath);$(ProjectDir)..\include;$(ProjectDir)..\..\Source\Source\ThirdParty\SDL\include;$(ProjectDir)..\include\Urho3D\ThirdParty;$(ProjectDir)..\include\Urho3D\ThirdParty\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;STEREO_INSTANCING;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -119,7 +119,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(IntermediateOutputPath);$(ProjectDir)..\include;$(ProjectDir)..\..\Source\Source\ThirdParty\SDL\include;$(ProjectDir)..\include\Urho3D\ThirdParty;$(ProjectDir)..\include\Urho3D\ThirdParty\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UWP;_CRT_SECURE_NO_WARNINGS;SDL_BUILDING_WINRT=1;UWP_HOLO;STEREO_INSTANCING;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsWinRT>false</CompileAsWinRT>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>

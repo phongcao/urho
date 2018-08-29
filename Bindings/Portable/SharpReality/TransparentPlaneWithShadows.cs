@@ -24,7 +24,10 @@ namespace Urho.SharpReality
 			material.SetTechnique(0, technique);
 			material.SetShaderParameter(CoreAssets.ShaderParameters.MatDiffColor, Color.White);
 			material.SetShaderParameter(CoreAssets.ShaderParameters.MatSpecColor, Color.White);
-			StaticModel model = Node.CreateComponent<StaticModel>();
+#if STEREO_INSTANCING
+            material.VertexShaderDefines += "STEREO_INSTANCING ";
+#endif
+            StaticModel model = Node.CreateComponent<StaticModel>();
 			model.Model = CoreAssets.Models.Plane;
 			model.Material = material;
 		}
